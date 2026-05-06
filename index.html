@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crush Cấp 3</title>
+
+<style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:linear-gradient(#c7d2fe,#fbcfe8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.box{
+  width:90%;
+  max-width:360px;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+button{
+  width:100%;
+  margin:5px 0;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#3b82f6;
+  color:white;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h3 id="title"></h3>
+  <p id="text"></p>
+  <div id="choices"></div>
+</div>
+
+<script>
+let love=0, secret=0;
+
+const s={
+start:{
+t:"Ngày đầu đi học, bạn thấy một người rất đặc biệt...",
+c:[
+["Nhìn 👀","look"],
+["Kệ 😐","ignore"]
+]
+},
+
+look:{
+t:"Cậu ấy cười với bạn.",
+e:()=>{love++;secret++;},
+c:[
+["Cười lại 😊","smile"],
+["Ngại 😳","shy"]
+]
+},
+
+ignore:{
+t:"Bạn bỏ lỡ khoảnh khắc đó.",
+c:[
+["Hối hận nhìn lại","look"],
+["Kệ luôn","bad"]
+]
+},
+
+smile:{
+t:"Hai bạn nói chuyện nhiều hơn.",
+e:()=>love+=2,
+c:[
+["Nhắn tin 💬","chat"],
+["Giữ khoảng cách","friend"]
+]
+},
+
+shy:{
+t:"Bạn ngại nhưng vẫn nhớ.",
+e:()=>love++,
+c:[
+["Chủ động sau","chat"],
+["Im lặng","friend"]
+]
+},
+
+chat:{
+t:"Cảm xúc lớn dần...",
+e:()=>{love+=2;secret++;},
+c:[
+["Tỏ tình 💗","end"],
+["Chờ thêm","friend"]
+]
+},
+
+friend:{
+t:"Bạn chọn làm bạn.",
+end:1
+},
+
+bad:{
+t:"Bạn bỏ lỡ tất cả.",
+end:1
+},
+
+end:{end:1}
+};
+
+function go(k){
+let o=s[k];
+if(o.e)o.e();
+
+title.innerText="Ký Ức Cấp 3";
+text.innerText=o.t;
+choices.innerHTML="";
+
+if(o.end){
+let r="";
+if(secret>=2&&love>=5) r="✨ Secret Ending: Nhiều năm sau vẫn còn yêu.";
+else if(love>=5) r="💙 Happy Ending";
+else if(love>=2) r="🙂 Friendzone";
+else r="💔 Bad Ending";
+
+text.innerText=r;
+
+let b=document.createElement("button");
+b.innerText="Chơi lại";
+b.onclick=()=>location.reload();
+choices.appendChild(b);
+return;
+}
+
+o.c.forEach(i=>{
+let b=document.createElement("button");
+b.innerText=i[0];
+b.onclick=()=>go(i[1]);
+choices.appendChild(b);
+});
+}
+
+go("start");
+</script>
+
+</body>
+</html>
